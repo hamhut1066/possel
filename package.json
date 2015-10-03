@@ -1,0 +1,22 @@
+{
+  "name": "possel",
+  "version": "1.0.0",
+  "description": "## Running Simple steps, assuming you're in a folder with a checkout of both pircel and possel as subfolders (called `pircel` and `possel`, of course):",
+  "main": "index.js",
+  "directories": {
+    "test": "tests"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@bitbucket.org/kitb/possel.git"
+  },
+  "author": "",
+  "license": "BSD",
+  "homepage": "https://bitbucket.org/kitb/possel#readme",
+  "dependencies": {
+    "babel": "^5.8.23"
+  }
+}

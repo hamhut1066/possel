@@ -54,3 +54,4 @@ target/
 
 # Ctags
 tags
+node_modules
