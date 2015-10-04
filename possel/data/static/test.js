@@ -218,3 +218,41 @@ possel.events = (function() {
   };
 
 })();
+
+/* console commands */
+var p = {
+  set m (str) {
+    possel.events.flux.dispatch({actionType: possel.events.action.SEND_EVENT, data: { message: str, buffer: possel.store.state().buffer } });
+    return "--- end ---";
+  },
+  set b (input) {
+    possel.store.state(undefined, input);
+    return "--- end ---";
+  },
+  get b () {
+    var s = possel.store.state().server;
+    if (!s) {
+      console.warn('Server not selected');
+      return undefined;
+    }
+
+    possel.store.getServerList()[s].buffers.map(function(buffer) {
+      console.log('(' + buffer.id + ') ' + buffer.name);
+    });
+    return '--- end ---';
+  },
+  set s (input) {
+    possel.store.state(input, undefined);
+  },
+  get s () {
+    possel.store.getServerList().map(function(server) {
+      console.log('(' + server.id + ') ' + server.host);
+    })
+    return '--- end ---';
+  },
+  set hist (no) {
+    possel.events.flux.dispatch({actionType: possel.events.action.FETCH_LINES, data: { id: null, no: (no || 30) }});
+    return "--- end ---";
+  }
+}
+
