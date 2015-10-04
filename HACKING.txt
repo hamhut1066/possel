@@ -22,3 +22,14 @@ I expect possel clients to work (i.e. put as much work as possible in the server
 
 Until it's an issue we're not giving much thought to performance; in particular pircel is fairly synchronous so we'll
 spend a lot of time blocking on database bits and bobs. I *do* expect this will need to be addressed.
+
+Working on a rewrite to using Reactjs, I have gotten it to a state where I am receiving messages, and have setup a data-store which keeps messages synchronously, and reduces chances of messing with state (don't mess with state!).
+There is a single object that should represent the whole state of the application, it can be accessed by calling `possel.store.state()`. we want the absolute minimum of info to be stateful, allowing us to build up a determenistic user-interface.
+
+Things that might be of interest for the frontend:
+- Currently there is no styling, so there is quite a lot of work to be done there.
+- Some of the react components need wiring up, (namely buffers with an `onClick` handler that will call `possel.store.state(server_id, buffer_id)`.) This will give the ability to change channels through the ui.
+- re: changing buffers, look into feasibility of using dispatcher to update the state there too!
+- create and wire up a text box so that messages can easily be sent (there is a dispatch command already created for this, refer to `var p` for how to implement this.)
+- Authentication is being implemented, so will need to be worked on.
+- Nice to Have: Look into using localstorage for caching of messages/buffers, and possibly even state. (all of this should be handled internally within the `possel.store` object.)
