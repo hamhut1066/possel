@@ -33,3 +33,6 @@ html, body{
 .nick {
   white-space: nowrap;
 }
+.active_buffer {
+    background-color: #ff0;
+}

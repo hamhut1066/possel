@@ -21,6 +21,9 @@ possel.store = (function() {
   };
 
   return {
+    buffParent: function(buff) {
+      return servers[buff_serv[buff.id]];
+    },
     state: function(server, buffer) {
       if (server) {
         state.server = server;

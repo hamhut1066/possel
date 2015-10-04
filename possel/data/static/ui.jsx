@@ -4,8 +4,18 @@
 var BufferItem = React.createClass({
     displayName: "BufferItem",
 
+    handleClick: function() {
+        var server = possel.store.buffParent(this.props.buffer);
+        // Refactor out into props
+        possel.store.state(server.id, this.props.buffer.id);
+        this.setState({});
+    },
+
     render: function() {
-        return <li key={'buffer' + this.props.buffer.id}>{this.props.buffer.name}</li>
+        var active = (possel.store.state().buffer === this.props.buffer.id) ? "active_buffer" : ""
+        return <li onClick={this.handleClick} className={active}>
+        {this.props.buffer.name}
+        </li>
     }
 });
 
@@ -15,9 +25,9 @@ var BufferList = React.createClass({
     render: function() {
         var buffers = this.props.buffers;
         var createBuffer = function (buffer, index) {
-            return <BufferItem buffer={buffer}/>
+            return <BufferItem key={'#' + buffer.id} buffer={buffer}/>
         }
-        return <ul>{buffers.map(createBuffer)}</ul>
+        return <ul className="" key={'bufferList'}>{buffers.map(createBuffer)}</ul>
     }
 });
 
@@ -28,11 +38,11 @@ var ServerList = React.createClass({
         var servers = this.props.servers;
         var createServer = function (server, index) {
             return <li key={'bufferlist' + index}>
-                <h1>{server.host}</h1>
+                <em>{server.host}</em>
                 <BufferList buffers={server.buffers} />
             </li>
         }
-        return <ul>{servers.map(createServer)}</ul>
+        return <ul className="list-unstyled">{servers.map(createServer)}</ul>
     }
 });
 
@@ -51,7 +61,51 @@ var MessageList = React.createClass({
         return <ul>{messages.map(createMessage)}</ul>
     }
 
-})
+});
+
+var InputBox = React.createClass({
+    getInitialState: function() {
+        return {value: ''};
+    },
+    changeHandler: function(event) {
+        this.setState({value: event.target.value});
+    },
+    clickHandler: function(event) {
+        this.submitHandler();
+        this.setState({value: ''});
+    },
+    keyHandler: function(event) {
+        if (event.which == 13) {
+            this.submitHandler();
+            this.setState({value: ''});
+        }
+    },
+
+    submitHandler: function() {
+        // do a dispatch thing.
+        possel.events.flux.dispatch(
+            {
+                actionType: possel.events.action.SEND_EVENT,
+                data: {
+                    message: this.state.value,
+                    buffer: possel.store.state().buffer
+                }
+            });
+
+    },
+
+    render: function() {
+        var value = this.state.value;
+        return <div className="col-lg-6">
+            <div className="input-group">
+                <input type="text" className="form-control" onKeyPress={this.keyHandler} onChange={this.changeHandler} value={value} />
+                <span class="input-group-btn">
+                    <button className="btn btn-default" onClick={this.clickHandler} type="button">Send</button>
+                </span>
+            </div>
+        </div>
+    }
+});
 
 var Application = React.createClass({
     displayName: "Application",
@@ -65,17 +119,22 @@ var Application = React.createClass({
     },
 
     _onChange: function() {
-        this.setState({ messages: possel.store.getCurrentThread(), servers: possel.store.getServerList()});
+        this.setState({
+            messages: possel.store.getCurrentThread(),
+            servers: possel.store.getServerList(),
+            state: possel.store.state()
+        });
     },
 
     render: function() {
         /* renders the entire application */
-        return <div>
-                <div class="col-md-1">
+        return <div className="row">
+                <div className="col-md-3">
                     <ServerList servers={this.state.servers} />
                 </div>
-                <div class="col-md-11">
+                <div className="col-md-9">
                     <MessageList messages={this.state.messages}/>
+                    <InputBox />
                 </div>
         </div>
     },
