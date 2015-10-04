@@ -1,13 +1,21 @@
 'use strict';
 /* react ui for the thing */
 /* creates a list of buffers */
+var BufferItem = React.createClass({
+    displayName: "BufferItem",
+
+    render: function() {
+        return <li key={'buffer' + this.props.buffer.id}>{this.props.buffer.name}</li>
+    }
+});
+
 var BufferList = React.createClass({
     displayName: "BufferList",
 
     render: function() {
         var buffers = this.props.buffers;
         var createBuffer = function (buffer, index) {
-            return <li key={'buffer' + index}>{buffer.name}</li>
+            return <BufferItem buffer={buffer}/>
         }
         return <ul>{buffers.map(createBuffer)}</ul>
     }
