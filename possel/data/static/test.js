@@ -70,10 +70,10 @@ possel.store = (function() {
       emit();
     },
     add_line: function(payload) {
-      var buffer_id = payload.data[0].buffer;
+      var buffer_id = payload.buffer;
       var buffer = servers[buff_serv[buffer_id]].buffers[buffer_id];
 
-      buffer.messages.push(payload.data[0]);
+      buffer.messages[payload.id] = payload;
       emit();
     }
   };
@@ -87,6 +87,7 @@ possel.events = (function() {
     GET_USER: "get_user",
     GET_BUFFER: "get_buffer",
     GET_LINE_BY_ID: "get_line_by_id",
+    FETCH_LINES: "fetch_lines",
     SEND_EVENT: "send_event"
   };
 
@@ -117,6 +118,24 @@ possel.events = (function() {
         $.get("/buffer/" + payload.data.id).then(function(data) {
           dispatcher.dispatch({actionType: action.DATA_RECEIVED, data: data, type: type.buffer});
         });
+      }
+    },
+    fetch_lines: function(payload) {
+      if(payload.actionType == action.FETCH_LINES) {
+        if (payload.data.id) {
+          $.get("/line?after=" + (payload.data.id + (payload.data.no || 30)) + "&before=" + payload.data.id)
+            .then(function(data) {
+              dispatcher.dispatch({actionType: action.DATA_RECEIVED, data: data, type: type.line});
+            });
+        } else {
+          $.get("/line?last=true")
+            .then(function(data) {
+              return $.get("/line?after=" + (data[0].id - (payload.data.no || 30)));
+            })
+            .then(function(data) {
+              dispatcher.dispatch({actionType: action.DATA_RECEIVED, data: data, type: type.line});
+            });
+        }
       }
     },
     get_line_by_id: function(payload) {
@@ -157,7 +176,7 @@ possel.events = (function() {
           }
           break;
         case type.line:
-          possel.store.add_line(payload);
+          payload.data.map(possel.store.add_line);
           break;
         default:
           console.warn("unknown type: ", payload);
@@ -177,7 +196,7 @@ possel.events = (function() {
     initial_state: function(payload) {
       dispatcher.dispatch({actionType: action.GET_SERVER, data: {id: "all"}});
       dispatcher.dispatch({actionType: action.GET_BUFFER, data: {id: "all"}});
-      // possel.store.changeSelection(1, 2);
+      dispatcher.dispatch({actionType: action.FETCH_LINES, data: {id: null, no: 30}});
     },
     handle_websocket_push: function(payload) {
       var msg = JSON.parse(event.data);
