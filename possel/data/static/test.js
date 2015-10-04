@@ -21,14 +21,18 @@ possel.store = (function() {
   };
 
   return {
-    changeSelection: function(server, buffer) {
+    state: function(server, buffer) {
       if (server) {
         state.server = server;
       }
       if (buffer) {
         state.buffer = buffer;
       }
-      emit();
+      if (server || buffer) {
+        emit();
+      }
+
+      return state;
     },
     addChangeListener: function(callback) {
       callbacks.push(callback);
@@ -91,7 +95,7 @@ possel.events = (function() {
     server: "server",
     buffer: "buffer",
     line: "line"
-  }
+  };
 
   var callbacks = {
     get_user: function(payload) {
@@ -128,11 +132,11 @@ possel.events = (function() {
           type: 'POST',
           url: '/line',
           data: JSON.stringify({ buffer: payload.data.buffer,
-                                 content: payload.data.content
+                                 content: payload.data.message || payload.data.content
                                }),
           contentType: 'application/json'
-        }).then(function(data) {
-          dispatcher.dispatch({actionType: action.DATA_RECEIVED, data: data, type: ""});
+        }).error(function(data) {
+          console.error(data);
         });
       }
     },
