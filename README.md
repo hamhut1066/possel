@@ -35,6 +35,15 @@ That last one is the only one you'll need to repeat.
     curl localhost:8080/server/1
     curl localhost:8080/server/all
 
+## Browser Console
+
+    p.s            // list all servers
+    p.s = Int      // set server as selected
+    p.b            // list all buffers on selected server
+    p.b = Int      // select buffer with id Int
+    p.m = '<msg>'  // send message <msg> to active buffer
+
+These are commands that can be run from your browser console to make interacting easier, give you access to a repl (if you want/need it for testing/trolling).
 ## Discussion
 
 We're on IRC! Server: `irc.imaginarynet.uk`, channel: `#possel`.
