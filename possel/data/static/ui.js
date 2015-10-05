@@ -90,7 +90,7 @@ var MessageList = React.createClass({
         };
         return React.createElement(
             "ul",
-            null,
+            { className: "list-unstyled" },
             messages.map(createMessage)
         );
     }
@@ -151,6 +151,47 @@ var InputBox = React.createClass({
     }
 });
 
+var LoginField = React.createClass({
+    displayName: 'LoginField',
+
+    changeHandler: function changeHandler(e) {
+        var state = {};
+        state[e.target.name] = e.target.value;
+        this.setState(state);
+    },
+    keyHandler: function keyHandler(e) {
+        if (e.which === 13) {
+            possel.events.flux.dispatch({
+                actionType: possel.events.action.AUTH,
+                data: {
+                    user: this.state.user,
+                    pass: this.state.pass
+                }
+            });
+        }
+    },
+    getInitialState: function getInitialState() {
+        return {
+            user: 'moredhel',
+            pass: 'password'
+        };
+    },
+
+    render: function render() {
+        return React.createElement(
+            "div",
+            null,
+            React.createElement(
+                "span",
+                null,
+                "Please Login"
+            ),
+            React.createElement("input", { onKeyPress: this.keyHandler, onChange: this.changeHandler, name: "user", value: this.state.user }),
+            React.createElement("input", { onKeyPress: this.keyHandler, onChange: this.changeHandler, name: "pass", type: "password", value: this.state.pass })
+        );
+    }
+});
+
 var Application = React.createClass({
     displayName: "Application",
 
@@ -166,12 +207,16 @@ var Application = React.createClass({
         this.setState({
             messages: possel.store.getCurrentThread(),
             servers: possel.store.getServerList(),
-            state: possel.store.state()
+            state: possel.store.state(),
+            auth: possel.store.state().auth
         });
     },
 
     render: function render() {
         /* renders the entire application */
+        if (!this.state.auth) {
+            return React.createElement(LoginField, null);
+        }
         return React.createElement(
             "div",
             { className: "row" },
@@ -191,6 +236,7 @@ var Application = React.createClass({
 
     getInitialState: function getInitialState() {
         return {
+            auth: false,
             servers: [],
             messages: []
         };
@@ -200,14 +246,17 @@ var Application = React.createClass({
 $(function () {
     var mountNode = document.getElementById("nodeMount");
     possel.node = React.render(React.createElement(Application, null), mountNode);
-
     possel.events.initial_state();
-    var ws = new ReconnectingWebSocket(ws_url);
-    ws.onopen = function () {
-        console.log("connected");
-    };
-    ws.onclose = function () {
-        console.log("disconnected");
-    };
-    ws.onmessage = possel.events.handle_websocket_push;
 });
+
+window.auth = function () {
+    var username = "moredhel";
+    var password = "password";
+    var data = JSON.stringify({ username: username, password: password });
+    return $.ajax({
+        type: 'POST',
+        url: '/session',
+        data: data,
+        contentType: 'application/json'
+    }).then(function () {});
+};

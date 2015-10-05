@@ -11,6 +11,15 @@ html, body{
   min-height: 100%;
 }
 
+#message-pane{
+  overflow-y: auto;
+  height: 100%;
+}
+
+#outer-container .row:first-child{
+  height: 90%;
+}
+
 .column {
   display: table-cell;
   padding-left: 0.5em;
@@ -24,14 +33,21 @@ html, body{
 
 .message {
   white-space: pre-wrap;
+  word-break: break-all;
 }
 
 .date {
   white-space: nowrap;
+  color: grey;
 }
 
 .nick {
   white-space: nowrap;
+  text-align: right;
+}
+
+.nav-buffer-normal{
+  padding-left: 1em;
 }
 .active_buffer {
     background-color: #ff0;

@@ -1,5 +1,16 @@
 'use strict';
 var possel = {};
+possel.ajaxify = function(url, payload, type) {
+  if (type == 'POST') {
+    return xr.post(url, payload);
+  }
+  if (!type) { /* GET */
+    //return xr.get(url, payload);
+    return $.get(url);
+  }
+  return Promise.resolve();
+};
+
 possel.store = (function() {
   /* Data Store */
   var callbacks = [];
@@ -9,6 +20,7 @@ possel.store = (function() {
   var buff_serv = [];
 
   var state = {
+    auth: false,
     server: 0,
     buffer: 0
   };
@@ -24,14 +36,15 @@ possel.store = (function() {
     buffParent: function(buff) {
       return servers[buff_serv[buff.id]];
     },
-    state: function(server, buffer) {
+    state: function(server, buffer, auth) {
       if (server) {
         state.server = server;
       }
       if (buffer) {
         state.buffer = buffer;
       }
-      if (server || buffer) {
+      if (auth) { state.auth = auth; }
+      if (server || buffer || auth) {
         emit();
       }
 
@@ -49,14 +62,22 @@ possel.store = (function() {
       if (state.server == 0 || state.buffer == 0) {
         return [];
       }
+      try {
       return servers[state.server].buffers[state.buffer].messages;
+      } catch (e) {
+        console.warn('something unexpected happened');
+        return [];
+      }
     },
     getServerList: function() {
       return servers;
     },
 
     add_server: function(server) {
+      var buffers;
+      if (servers[server.id]) buffers = servers[server.id].buffers;
       servers[server.id] = server;
+      servers[server.id].buffers = buffers;
 
       if(servers[server.id].buffers === undefined) {
         servers[server.id].buffers = [];
@@ -64,12 +85,16 @@ possel.store = (function() {
       emit();
     },
     add_buffer: function(buffer) {
-      servers[buffer.server].buffers[buffer.id] = buffer;
-      if(servers[buffer.server].buffers[buffer.id].messages === undefined) {
-        servers[buffer.server].buffers[buffer.id].messages = [];
-      }
+      if (buffer.server) {
+        servers[buffer.server].buffers[buffer.id] = buffer;
+        if(servers[buffer.server].buffers[buffer.id].messages === undefined) {
+          servers[buffer.server].buffers[buffer.id].messages = [];
+        }
 
-      buff_serv[buffer.id] = buffer.server;
+        buff_serv[buffer.id] = buffer.server;
+      } else {
+        console.warn('handle null-server buffer');
+      }
       emit();
     },
     add_line: function(payload) {
@@ -91,6 +116,7 @@ possel.events = (function() {
     GET_BUFFER: "get_buffer",
     GET_LINE_BY_ID: "get_line_by_id",
     FETCH_LINES: "fetch_lines",
+    AUTH: "auth",
     SEND_EVENT: "send_event"
   };
 
@@ -104,21 +130,21 @@ possel.events = (function() {
   var callbacks = {
     get_user: function(payload) {
       if(payload.actionType == action.GET_USER) {
-        $.get("/user/" + payload.data.id).then(function(data) {
+        possel.ajaxify('/user/' + payload.data.id).then(function(data) {
           dispatcher.dispatch({actionType: action.DATA_RECEIVED, data: data, type: type.user});
         });
       }
     },
     get_server: function(payload) {
       if(payload.actionType == action.GET_SERVER) {
-        $.get("/server/" + payload.data.id).then(function(data) {
+        possel.ajaxify('/server/' + payload.data.id).then(function(data) {
           dispatcher.dispatch({actionType: action.DATA_RECEIVED, data: data, type: type.server});
         });
       }
     },
     get_buffer: function(payload) {
       if(payload.actionType == action.GET_BUFFER) {
-        $.get("/buffer/" + payload.data.id).then(function(data) {
+        return possel.ajaxify('/buffer/' + payload.data.id).then(function(data) {
           dispatcher.dispatch({actionType: action.DATA_RECEIVED, data: data, type: type.buffer});
         });
       }
@@ -126,14 +152,20 @@ possel.events = (function() {
     fetch_lines: function(payload) {
       if(payload.actionType == action.FETCH_LINES) {
         if (payload.data.id) {
-          $.get("/line?after=" + (payload.data.id + (payload.data.no || 30)) + "&before=" + payload.data.id)
+          possel.ajaxify('/line?after=' + (payload.data.id - (payload.data.no || 30)) + '&before=' + payload.data.id)
             .then(function(data) {
               dispatcher.dispatch({actionType: action.DATA_RECEIVED, data: data, type: type.line});
             });
         } else {
-          $.get("/line?last=true")
+          possel.ajaxify("/line?last=true")
+          //   .then(function() {
+          //   console.log('success')
+          // }).then(function() {
+          //   console.log('success2')
+          // });
             .then(function(data) {
-              return $.get("/line?after=" + (data[0].id - (payload.data.no || 30)));
+              // dispatcher.dispatch({actionType: action.FETCH_LINES, data: {id: data[0].id}});
+              return possel.ajaxify("/line?after=" + (data[0].id - (payload.data.no || 30)));
             })
             .then(function(data) {
               dispatcher.dispatch({actionType: action.DATA_RECEIVED, data: data, type: type.line});
@@ -141,29 +173,42 @@ possel.events = (function() {
         }
       }
     },
+
     get_line_by_id: function(payload) {
       if(payload.actionType == action.GET_LINE_BY_ID) {
-        $.get("/line?id=" + payload.data.id).then(function(data) {
+        possel.ajaxify("/line?id=" + payload.data.id).then(function(data) {
           dispatcher.dispatch({actionType: action.DATA_RECEIVED, data: data, type: type.line});
         });
       }
     },
     send_line: function(payload) {
       if (payload.actionType == action.SEND_EVENT) {
-        $.ajax({
-          type: 'POST',
-          url: '/line',
-          data: JSON.stringify({ buffer: payload.data.buffer,
-                                 content: payload.data.message || payload.data.content
-                               }),
-          contentType: 'application/json'
-        }).error(function(data) {
+        possel.ajaxify('/line', {
+          buffer: payload.data.buffer,
+          content: payload.data.message || payload.data.content
+        }, 'POST')
+          .catch(function(data) {
           console.error(data);
+            window.err = data;
+        });
+      }
+    },
+    authenticate: function(payload) {
+      if (payload.actionType === action.AUTH) {
+        var username = payload.data.user;
+        var password =payload.data.pass;
+        var data = {username: username, password: password};
+        return possel.ajaxify(
+          '/session',
+          data,
+          'POST'
+        ).then(function() {
+          possel.events.initial_state();
         });
       }
     },
     data_received: function(payload) {
-      if (payload.actionType === action.DATA_RECEIVED) {
+      if (payload.actionType === action.DATA_RECEIVED && payload.data) {
         switch (payload.type) {
         case type.user:
           console.warn("unknown functionality");
@@ -192,14 +237,32 @@ possel.events = (function() {
     dispatcher.register(callbacks[key]);
   }
 
+  var websocket_setup = false;
+  var setup_ws = function() {
+    if (websocket_setup) { return false; }
+    var ws = new ReconnectingWebSocket(ws_url);
+    ws.onopen = function() {
+      console.log("connected");
+    };
+    ws.onclose = function() {
+      console.log("disconnected");
+    };
+    ws.onmessage = possel.events.handle_websocket_push;
+    websocket_setup = true;
+  };
 
   return {
     flux: dispatcher,
     action: action,
     initial_state: function(payload) {
-      dispatcher.dispatch({actionType: action.GET_SERVER, data: {id: "all"}});
-      dispatcher.dispatch({actionType: action.GET_BUFFER, data: {id: "all"}});
-      dispatcher.dispatch({actionType: action.FETCH_LINES, data: {id: null, no: 30}});
+      possel.ajaxify('/session').then(function() {
+        possel.store.state(undefined, undefined, true);
+        dispatcher.dispatch({actionType: action.GET_SERVER, data: {id: "all"}});
+        dispatcher.dispatch({actionType: action.GET_BUFFER, data: {id: "all"}});
+        setup_ws();
+      }, function() {
+        // dispatcher.dispatch({actionType: action.AUTH});
+      })
     },
     handle_websocket_push: function(payload) {
       var msg = JSON.parse(event.data);
@@ -213,6 +276,8 @@ possel.events = (function() {
         break;
       case "user":
         dispatcher.dispatch({actionType: action.GET_USER, data: {id: msg.user}});
+      case "last_line":
+        dispatcher.dispatch({actionType: action.FETCH_LINES, data: {id: msg.line - 1}});
       default:
         console.warn("unknown message format received from websocket");
         console.warn(msg);
