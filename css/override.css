@@ -28,8 +28,6 @@ body, html {
 }
 ::-webkit-scrollbar-track {
     background: #e3e0cf;
-    -webkit-box-shadow: inset 0 0 0.3em rgba(255,255,255,0.5);
-    box-shadow: inset 0 0 0.3em rgba(255,255,255,0.5);
 }
 ::-webkit-scrollbar-thumb{
     background: #9fa8a3;
@@ -54,6 +52,17 @@ a:focus {
 }
 
 
+.input-field {
+    position: fixed;
+    bottom: 0;
+    left: 17em;
+    right: 0;
+    height: 5.25em;
+    background: #f0f0f0;
+    padding: 1em;
+}
+
+
 .label-light {
     background: #393b39;
     color: #aaacab;
@@ -70,7 +79,25 @@ a:focus {
     height: 100%;
 }
 
+.sidebar ::-webkit-scrollbar-track {
+    background: none;
+}
+.sidebar ::-webkit-scrollbar-thumb {
+    background: #000;
+}
+.sidebar ::-webkit-scrollbar {
+    display: none;
+}
+.sidebar:hover ::-webkit-scrollbar {
+    display: initial;
+}
+
     .sidebar header {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 17em;
+        height: 5.25em;
         padding: 1em;
         background: #000;
         border-bottom: 0.25em solid #fff;
@@ -114,8 +141,10 @@ a:focus {
         font-weight: bold;
     }
 
-    .sidebar li.active {
+    .sidebar li.active,
+    .sidebar ul.nicklist>li:hover {
         background: #000;
+        cursor: pointer;
     }
 
     .sidebar .nicklist li>i.status {
@@ -141,23 +170,68 @@ a:focus {
         font-size: 50%;
         vertical-align: middle;
         margin-left: 0.5em;
+        margin-top: -0.3em;
     }
+
+    .sidebar .nicklist li .part {
+        display: none;
+        color: #fff;
+        opacity: 0.5;
+    }
+
+    .sidebar .nicklist li:hover .part {
+        display: inline-block;
+    }
+   
+    .sidebar .nicklist li:hover .part:hover {
+        opacity: 1.0;
+    } 
+
+
+.sidewrap {
+    position: fixed;
+    top: 5.25em;
+    left: 0;
+    width: 17em;
+    overflow-x: hidden;
+    overflow-y: auto;
+    height: 100%;
+}
 
 
 .topic {
-    padding: 1em;
+    padding: 1em 2em;
+    line-height: 3em;
+    vertical-align: middle;
+    height: 5.25em;
+    border-bottom: 0.25em solid #f0f0f0;
+    overflow: hidden;
 }
 
     .topic .channame {
         font-weight: bold;
-        font-size: 150%;
-        margin: 0.5em 0;
+        font-size: 120%;
     }
 
     .topic .chantopic {
         opacity: 0.5;
         display: inline-block;
         padding-left: 1em;
+    }
+
+    .topic .chanmeta .ring {
+        border-radius: 50%;
+        display: inline-block;
+        border: 0.1em solid #181818;
+        width: 3em;
+        height: 3em;
+        padding: 0em 0.3em;
+        text-align: center;
+    }
+
+    .topic .spacer {
+        width: 1em;
+        display: inline-block;
     }
 
 .wrapper {
