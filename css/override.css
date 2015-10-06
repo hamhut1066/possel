@@ -6,8 +6,8 @@
 
 body, html {
     height: 100%;
-    background: #c5d5cb;
-    color: #fff;
+    background: #fff;
+    color: #181818;
     font-size: 10pt;
     font-family: 'Open Sans', sans-serif;
 }
@@ -53,24 +53,18 @@ a:focus {
     color: inherit;
 }
 
-.buffer {
-    margin: 1em;
-    background: #fff;
-    color: #181818;
-    border-radius: 0.2em;
-}
 
 .label-light {
-    background: #edf2ef;
-    color: #282828;
-    border-radius: 3px;
+    background: #393b39;
+    color: #aaacab;
+    border-radius: 0.2em;
 }
 
 
 .sidebar {
-    background: #fff;
+    background: #181818;
     padding: 0;
-    color: #4f5451;
+    color: #727673;
     float: left;
     width: 17em;
     height: 100%;
@@ -78,8 +72,8 @@ a:focus {
 
     .sidebar header {
         padding: 1em;
-        background: #f9faf9;
-        border-bottom: 0.25em solid #edf2ef;
+        background: #000;
+        border-bottom: 0.25em solid #fff;
     }
 
     .sidebar header ul.nicklist {
@@ -120,6 +114,10 @@ a:focus {
         font-weight: bold;
     }
 
+    .sidebar li.active {
+        background: #000;
+    }
+
     .sidebar .nicklist li>i.status {
         font-size: 0.5em;
         vertical-align: middle;
@@ -140,13 +138,13 @@ a:focus {
     }
 
     .sidebar .nicklist .badge {
-        font-size: 60%;
+        font-size: 50%;
         vertical-align: middle;
+        margin-left: 0.5em;
     }
 
 
 .topic {
-    border-bottom: 0.25em solid #edf2ef;
     padding: 1em;
 }
 
