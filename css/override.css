@@ -1,0 +1,220 @@
+/**
+ *
+ *  P O S S E L     C L I E N T    C S S
+ * 
+**/
+
+body, html {
+    height: 100%;
+    background: #c5d5cb;
+    color: #fff;
+    font-size: 10pt;
+    font-family: 'Open Sans', sans-serif;
+}
+
+
+@media (max-width: 479px){
+    /* Hide the scrollbar on devices that are *probaby* touch */
+    body::-webkit-scrollbar {
+        display: none;
+    }
+}
+
+::-webkit-scrollbar {
+    width: 0.5em;
+    max-width: 0.5em;
+    height: 0.5em;
+    max-width: 0.5em;
+}
+::-webkit-scrollbar-track {
+    background: #e3e0cf;
+    -webkit-box-shadow: inset 0 0 0.3em rgba(255,255,255,0.5);
+    box-shadow: inset 0 0 0.3em rgba(255,255,255,0.5);
+}
+::-webkit-scrollbar-thumb{
+    background: #9fa8a3;
+}
+::-webkit-scrollbar-thumb:window-inactive {
+    background: #9fa8a3;
+}
+
+*:focus {
+    outline: 0;
+}
+
+::selection { background: #FFF; color: #181818; }
+mark, .mark { background: #FFF; color: #181818; }
+
+a, a h1, a h2, a h3, a h4 {
+    color: inherit;
+}
+a:hover,
+a:focus {
+    color: inherit;
+}
+
+.buffer {
+    margin: 1em;
+    background: #fff;
+    color: #181818;
+    border-radius: 0.2em;
+}
+
+.label-light {
+    background: #edf2ef;
+    color: #282828;
+    border-radius: 3px;
+}
+
+
+.sidebar {
+    background: #fff;
+    padding: 0;
+    color: #4f5451;
+    float: left;
+    width: 17em;
+    height: 100%;
+}
+
+    .sidebar header {
+        padding: 1em;
+        background: #f9faf9;
+        border-bottom: 0.25em solid #edf2ef;
+    }
+
+    .sidebar header ul.nicklist {
+        margin-top: 0.5em;
+    }
+
+    .logo-sidebar {
+        height: 3em;
+    }
+
+    .sidebar section {
+        padding: 1em 1em 0em 1em;
+    }
+
+    .sidebar section h5 {
+        text-transform: uppercase;
+    }
+    .sidebar section h6 {
+        opacity: 0.8;
+        margin-left: 1em;
+    }
+
+    .sidebar section ul.nicklist {
+        margin: 0.1em -1em;
+    }
+    
+    .sidebar section li {
+        padding: 0.1em 1em;
+    }
+
+    .sidebar ul.nicklist {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+    }
+
+    .sidebar ul.nicklist li.unread {
+        font-weight: bold;
+    }
+
+    .sidebar .nicklist li>i.status {
+        font-size: 0.5em;
+        vertical-align: middle;
+        padding-right: 0.2em;
+    }
+
+    .sidebar .nicklist li>i.online {
+        color: #84d5a2;
+    }
+    .sidebar .nicklist li>i.away {
+        opacity: 0.6;
+    }
+
+    .sidebar .nicklist li>i.channel {
+        font-size: 0.9em;
+        opacity: 0.6;
+        vertical-align: middle;
+    }
+
+    .sidebar .nicklist .badge {
+        font-size: 60%;
+        vertical-align: middle;
+    }
+
+
+.topic {
+    border-bottom: 0.25em solid #edf2ef;
+    padding: 1em;
+}
+
+    .topic .channame {
+        font-weight: bold;
+        font-size: 150%;
+        margin: 0.5em 0;
+    }
+
+    .topic .chantopic {
+        opacity: 0.5;
+        display: inline-block;
+        padding-left: 1em;
+    }
+
+.wrapper {
+    height: 100%;
+    overflow: hidden;
+}
+
+
+
+
+/***
+    SUPER SIMPLE SQUARE-GRID-SYSTEM
+    Columns are all the same height in each row
+***/
+
+@media (min-width: 768px) {
+    .srow { width: 100%; display: table; table-layout: fixed; }
+    .scol { display: table-cell; vertical-align: top; }
+}
+
+
+
+/**
+aspect ratio  | padding-bottom value
+--------------|----------------------
+    16:9      |       56.25%
+    4:3       |       75%
+    3:2       |       66.66%
+    8:5       |       62.5%
+**/
+.square,
+.rect {
+    position: relative;
+    width: 100%;
+    padding-bottom: 100%;
+}
+
+.rect {
+    padding-bottom: 56.25%;
+}
+
+.square>div,
+.rect>div {
+    position: absolute;
+    top: 0; bottom: 0; left: 0; right: 0;
+    overflow: hidden;
+}
+.square>img,
+.rect>img {
+    position: absolute;
+    top: 0; bottom: 0; left: 0; right: 0;
+    padding-left: 100%;
+    height: 100%;
+    width: 100%;
+    box-sizing: border-box;
+    background-position: center center;
+    background-size: cover;
+}

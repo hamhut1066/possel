@@ -1,0 +1,16 @@
+# Site Settings
+title: Possel
+email: meh@butts.so
+description: "Possel - a better cross platform IRC client"
+baseurl: ""
+url: "http://butts.so"
+author: "Possel"
+
+# Main Navigation (Manual)
+navigation:
+ - text: Home
+   url: /
+
+# Build Settings
+markdown: kramdown
+permalink: pretty
