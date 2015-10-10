@@ -8,6 +8,9 @@
 
     <meta name="description" content="{{ site.description }}" />
 
+    <meta name="twitter:widgets:theme" content="light">
+    <meta name="twitter:widgets:link-color" content="#1f4a92">
+    <meta name="twitter:widgets:border-color" content="#e0e0e0">
     
     <link href="http://fonts.googleapis.com/css?family=Roboto:400,700,400italic,100,200|Roboto+Slab:400,100,700" rel="stylesheet" type="text/css">
     <link rel="stylesheet" href="{{ site.baseurl }}/css/bootstrap.min.css">
@@ -21,4 +24,21 @@
 
     <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
     <script type="text/javascript" src="{{ site.baseurl }}/js/bootstrap.min.js"></script>
+
+    <script>window.twttr = (function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0],
+    t = window.twttr || {};
+  if (d.getElementById(id)) return t;
+  js = d.createElement(s);
+  js.id = id;
+  js.src = "https://platform.twitter.com/widgets.js";
+  fjs.parentNode.insertBefore(js, fjs);
+ 
+  t._e = [];
+  t.ready = function(f) {
+    t._e.push(f);
+  };
+ 
+  return t;
+}(document, "script", "twitter-wjs"));</script>
   </head>

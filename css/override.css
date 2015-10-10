@@ -21,26 +21,26 @@ body, html {
 }
 
 ::-webkit-scrollbar {
-    width: 0.5em;
-    max-width: 0.5em;
-    height: 0.5em;
-    max-width: 0.5em;
+    width: 0.25em;
+    max-width: 0.25em;
+    height: 0.25em;
+    max-width: 0.25em;
 }
 ::-webkit-scrollbar-track {
-    background: #e3e0cf;
+    background: #fff;
 }
 ::-webkit-scrollbar-thumb{
-    background: #9fa8a3;
+    background: #bbb;
 }
 ::-webkit-scrollbar-thumb:window-inactive {
-    background: #9fa8a3;
+    background: #888;
 }
 
 *:focus {
     outline: 0;
 }
 
-::selection { background: #FFF; color: #181818; }
+/*::selection { background: #FFF; color: #181818; }*/
 mark, .mark { background: #FFF; color: #181818; }
 
 a, a h1, a h2, a h3, a h4 {
@@ -51,6 +51,145 @@ a:focus {
     color: inherit;
 }
 
+blockquote {
+    font-size: 110%;
+    padding: 1em 2em;
+    margin-bottom: 1em;
+    border-left: 0.25em solid #d0d0d0;
+}
+
+blockquote.twitter-tweet {
+    font-size: 110%;
+    border-color: #55acee;
+}
+
+.chatblock {
+    padding: 2em;
+    overflow-x: hidden;
+    overflow-y: scroll;
+    position: fixed;
+    top: 5.25em;
+    bottom: 5.25em;
+    left: 17em;
+    right: 17em;
+}
+
+    .chatblock .mention {
+        font-weight: bold;
+    }
+
+    .chatblock .media {
+        margin-top: 0.5em;
+    }
+
+    .chatblock .media a,
+    .chatblock .media a:visited {
+        color: #000;
+        text-decoration: underline;
+    }
+
+    .chatblock .media-left {
+        padding-right: 1em;
+    }
+
+    .chatblock p {
+        margin-bottom: 0.5em;
+    }
+
+    .chatblock .richmedia {
+        width: 50em;
+    }
+
+    .chatblock .media .richmedia a,
+    .chatblock .media .richmedia a:visited {
+        color: #000;
+    }
+
+    .chatblock .richmedia .richmedia-embed {
+        background: #111;
+    }
+
+    .chatblock .richmedia .padder {
+        padding: 2em 2em 2em 0em;
+    }
+    
+    .chatblock .richmedia h3 {
+        font-size: 150%;
+        margin: 0;
+        vertical-align: middle;
+        margin-bottom: 0.75em;
+    }
+
+    .chatblock .richmedia .embed-icon {
+        width: 2em;
+        height: 2em;
+        display: block;
+        margin-bottom: 1em;
+    }
+
+.imsogoodatnamingdivs {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 5.25em;
+    display: block;
+    width: 17em;
+    padding: 0;
+    color: #aaa;
+}
+
+    .imsogoodatnamingdivs .dooblydoo {
+        background: #fafafa;
+        padding: 2em 1em;
+        height: 5.25em;
+        border-bottom: 0.25em solid #f0f0f0;
+    }
+
+    .imsogoodatnamingdivs .dooblydoo h2 {
+        font-weight: normal;
+        font-size: 100%;
+        text-transform: uppercase;
+        margin: 0;
+        text-align: center;
+    }
+
+    .imsogoodatnamingdivs .nickwrap {
+        overflow-y: scroll;
+        overflow-x: hidden;
+        position: fixed;
+        top: 5.25em;
+        right: 0;
+        bottom: 5.25em;
+        width: 17em;
+    }
+
+    .imsogoodatnamingdivs ul.nicklist {
+        list-style: none;
+        padding: 2em 3em;
+        margin: 0;
+        word-wrap: break-word;
+    }
+
+    .imsogoodatnamingdivs ul.nicklist li.oper:before,
+    .imsogoodatnamingdivs ul.nicklist li.voice:before {
+        content: "@";
+        color: #54C47E;
+        font-size: 80%;
+        text-align: center;
+        display: inline-block;
+        width: 2em;
+        margin-left: -2em;
+        padding-right: 0.2em;
+    }
+    
+    .imsogoodatnamingdivs ul.nicklist li.voice:before {
+        content: "+";
+        color: #ffa44b;
+    }
+
+    .imsogoodatnamingdivs ul.nicklist li.active {
+        color: #666;
+    }
 
 .input-field {
     position: fixed;
@@ -67,6 +206,25 @@ a:focus {
     background: #393b39;
     color: #aaacab;
     border-radius: 0.2em;
+}
+
+
+.padder {
+    padding: 2em;
+}
+
+
+.panel {
+    border-radius: 0;
+    border: 0.1em solid #e0e0e0;
+    box-shadow: 0.2em 0.2em 1em 0em rgba(0,0,0,0.15);
+}
+
+
+.progress {
+    height: 0.5em;
+    border-radius: 0;
+    margin-bottom: 0.5em;
 }
 
 
@@ -129,6 +287,7 @@ a:focus {
     
     .sidebar section li {
         padding: 0.1em 1em;
+        word-wrap: break-word;
     }
 
     .sidebar ul.nicklist {
@@ -199,13 +358,21 @@ a:focus {
 }
 
 
+.spacer {
+    width: 0.5em;
+    display: inline-block;
+}
+
+
 .topic {
     padding: 1em 2em;
     line-height: 3em;
     vertical-align: middle;
     height: 5.25em;
-    border-bottom: 0.25em solid #f0f0f0;
+    border-bottom: 0.25em solid #f8f8f8;
     overflow: hidden;
+    background: #fff;
+    margin-right: 17em;
 }
 
     .topic .channame {
@@ -229,10 +396,26 @@ a:focus {
         text-align: center;
     }
 
+
     .topic .spacer {
         width: 1em;
         display: inline-block;
     }
+
+.userimg {
+    width: 40px;
+    height: 40px;
+}
+
+.usermsgtime {
+    color: #888;
+}
+
+.usernick {
+    font-weight: bold;
+    display: inline-block;
+    margin-bottom: 0.25em;
+}
 
 .wrapper {
     height: 100%;
