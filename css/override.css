@@ -59,8 +59,9 @@ blockquote {
 }
 
 blockquote.twitter-tweet {
-    font-size: 110%;
-    border-color: #55acee;
+    font-size: 100%;
+    border: 0;
+    margin: 0;
 }
 
 .chatblock {
@@ -84,7 +85,10 @@ blockquote.twitter-tweet {
 
     .chatblock .media a,
     .chatblock .media a:visited {
-        color: #000;
+        color: #1f4a92;
+        text-decoration: none;
+    }
+    .chatblock .media a:hover {
         text-decoration: underline;
     }
 
@@ -92,8 +96,21 @@ blockquote.twitter-tweet {
         padding-right: 1em;
     }
 
+    .chatblock .notice {
+        margin-left: 1em;
+        padding: 1em;
+        padding-left: 40px;
+        opacity: 0.6;
+    }
+
     .chatblock p {
         margin-bottom: 0.5em;
+    }
+
+    .chatblock hr {
+        margin: 2em 10em;
+        border-color: #f0f0f0;
+        border-width: 0.25em;
     }
 
     .chatblock .richmedia {
@@ -102,14 +119,14 @@ blockquote.twitter-tweet {
 
     .chatblock .media .richmedia a,
     .chatblock .media .richmedia a:visited {
-        color: #000;
+        color: #444;
     }
 
     .chatblock .richmedia .richmedia-embed {
         background: #111;
     }
 
-    .chatblock .richmedia .padder {
+    .chatblock .richmedia .row .padder {
         padding: 2em 2em 2em 0em;
     }
     
@@ -126,6 +143,12 @@ blockquote.twitter-tweet {
         display: block;
         margin-bottom: 1em;
     }
+
+    .chatblock .richmedia .fa-close { opacity: 0.5; }
+    .chatblock .richmedia:hover .fa-close { opacity: 1.0; }
+    
+
+    
 
 .imsogoodatnamingdivs {
     position: fixed;
