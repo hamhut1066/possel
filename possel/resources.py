@@ -14,7 +14,7 @@ import logging
 from pircel import model, tornado_adapter
 import tornado.web
 
-from possel import commands
+from possel import auth, commands
 
 logger = logging.getLogger(__name__)
 
@@ -33,12 +33,40 @@ class BaseAPIHandler(tornado.web.RequestHandler):
     def get_body_argument_tuple(self, names):
         return [self.get_body_argument(name) for name in names]
 
+    def get_current_user(self):
+        token_string = self.get_secure_cookie('token')
+        if token_string is None:
+            return None
+        user = auth.get_user_by_token(token_string)
+        if user is None:
+            self.clear_cookie('token')
+        return user
+
+
+class SessionHandler(BaseAPIHandler):
+    def post(self):
+        j = self.json
+        try:
+            token = auth.login_get_token(j['username'], j['password'], self.get_secure_cookie('token'))
+        except auth.LoginFailed:
+            raise tornado.web.HTTPError(401)
+        else:
+            self.set_secure_cookie('token', token)
+            self.write({})
+
+    def get(self):
+        if not self.get_current_user():
+            raise tornado.web.HTTPError(401)
+        # Used to verify tokens
+        self.write({})
+
 
 class LinesHandler(BaseAPIHandler):
     def initialize(self, *args, **kwargs):
         super(LinesHandler, self).initialize(*args, **kwargs)
         self.dispatcher = commands.Dispatcher(self.interfaces)
 
+    @tornado.web.authenticated
     def get(self):
         line_id = self.get_argument('id', None)
         before = self.get_argument('before', None)
@@ -63,9 +91,13 @@ class LinesHandler(BaseAPIHandler):
 
         self.write(json.dumps([line.to_dict() for line in lines]))
 
+    @tornado.web.authenticated
     def post(self):
         buffer_id = self.json['buffer']
         content = self.json['content']
+
+        if not content:
+            raise tornado.web.HTTPError(400)
 
         if content[0] == '/':
             logger.debug('Slash line: %s', content)
@@ -74,7 +106,8 @@ class LinesHandler(BaseAPIHandler):
             buffer = model.IRCBufferModel.get(id=buffer_id)
             interface = self.interfaces[buffer.server_id]
 
-            interface.server_handler.send_message(buffer.name, content)
+            if buffer.current:
+                interface.server_handler.send_message(buffer.name, content)
 
         # javascript needs this to write something, otherwise it doesn't
         # handle it as a success.
@@ -82,6 +115,7 @@ class LinesHandler(BaseAPIHandler):
 
 
 class BufferGetHandler(BaseAPIHandler):
+    @tornado.web.authenticated
     def get(self, buffer_id):
         buffers = model.IRCBufferModel.select()
         if buffer_id != 'all':
@@ -91,6 +125,7 @@ class BufferGetHandler(BaseAPIHandler):
 
 
 class BufferPostHandler(BaseAPIHandler):
+    @tornado.web.authenticated
     def post(self):
         server_id = self.json['server']
         name = self.json['name']
@@ -104,6 +139,7 @@ class BufferPostHandler(BaseAPIHandler):
 
 
 class ServerGetHandler(BaseAPIHandler):
+    @tornado.web.authenticated
     def get(self, server_id):
         servers = model.IRCServerModel.select()
         if server_id != 'all':
@@ -113,6 +149,7 @@ class ServerGetHandler(BaseAPIHandler):
 
 
 class ServerPostHandler(BaseAPIHandler):
+    @tornado.web.authenticated
     def post(self):
         j = self.json
 
@@ -131,6 +168,7 @@ class ServerPostHandler(BaseAPIHandler):
 
 
 class UserGetHandler(BaseAPIHandler):
+    @tornado.web.authenticated
     def get(self, user_id):
         users = model.IRCUserModel.select()
         if user_id != 'all':
