@@ -33,7 +33,7 @@ body, html {
     background: #bbb;
 }
 ::-webkit-scrollbar-thumb:window-inactive {
-    background: #888;
+    background: #bbb;
 }
 
 *:focus {
@@ -81,6 +81,8 @@ blockquote.twitter-tweet {
 
     .chatblock .media {
         margin-top: 0.5em;
+        /* Keep a bit of space between small messages */
+        min-height: 4em; 
     }
 
     .chatblock .media a,
@@ -98,9 +100,20 @@ blockquote.twitter-tweet {
 
     .chatblock .notice {
         margin-left: 1em;
-        padding: 1em;
+        padding: 0.5em 1em;
         padding-left: 40px;
-        opacity: 0.6;
+        color: #888 !important;
+        min-height: initial;
+    }
+
+    .chatblock .notice+.notice {
+        padding-top: 0;
+        margin-top: 0.25em;
+    }
+
+    .chatblock .notice .userimg {
+        width: 20px;
+        height: 20px;
     }
 
     .chatblock p {
@@ -109,11 +122,16 @@ blockquote.twitter-tweet {
 
     .chatblock hr {
         margin: 2em 10em;
-        border-color: #f0f0f0;
+        border-color: #bbb;
         border-width: 0.25em;
     }
 
     .chatblock .richmedia {
+        width: 40em;
+        font-size: 80%;
+    }
+
+    .chatblock .richmedia.wider {
         width: 50em;
     }
 
@@ -126,7 +144,7 @@ blockquote.twitter-tweet {
         background: #111;
     }
 
-    .chatblock .richmedia .row .padder {
+    .chatblock .richmedia .row .panel-body {
         padding: 2em 2em 2em 0em;
     }
     
@@ -134,18 +152,18 @@ blockquote.twitter-tweet {
         font-size: 150%;
         margin: 0;
         vertical-align: middle;
-        margin-bottom: 0.75em;
+        margin: 0.75em 0em;
     }
 
     .chatblock .richmedia .embed-icon {
-        width: 2em;
-        height: 2em;
-        display: block;
-        margin-bottom: 1em;
+        width: 1.5em;
+        height: 1.5em;
+        display: inline-block;
     }
 
     .chatblock .richmedia .fa-close { opacity: 0.5; }
     .chatblock .richmedia:hover .fa-close { opacity: 1.0; }
+    .chatblock .richmedia .fa-close:hover { cursor: pointer;}
     
 
     
@@ -162,7 +180,7 @@ blockquote.twitter-tweet {
 }
 
     .imsogoodatnamingdivs .dooblydoo {
-        background: #fafafa;
+        background: #f8f8f8;
         padding: 2em 1em;
         height: 5.25em;
         border-bottom: 0.25em solid #f0f0f0;
@@ -188,7 +206,7 @@ blockquote.twitter-tweet {
 
     .imsogoodatnamingdivs ul.nicklist {
         list-style: none;
-        padding: 2em 3em;
+        padding: 2em 2em 2em 4em;
         margin: 0;
         word-wrap: break-word;
     }
@@ -196,13 +214,13 @@ blockquote.twitter-tweet {
     .imsogoodatnamingdivs ul.nicklist li.oper:before,
     .imsogoodatnamingdivs ul.nicklist li.voice:before {
         content: "@";
-        color: #54C47E;
+        color: #ffa44b;
         font-size: 80%;
         text-align: center;
         display: inline-block;
         width: 2em;
         margin-left: -2em;
-        padding-right: 0.2em;
+        padding-right: 0.5em;
     }
     
     .imsogoodatnamingdivs ul.nicklist li.voice:before {
@@ -221,8 +239,50 @@ blockquote.twitter-tweet {
     right: 0;
     height: 5.25em;
     background: #f0f0f0;
-    padding: 1em;
+    padding: 1.375em;
 }
+
+    .input-field .input {
+        margin-right: 7em;
+    }
+
+    .input-field #nick {
+        background: #f6f6f6;
+        color: #444;
+        position: absolute;
+        font: inherit;
+        font-size: 80%;
+        margin: 0.4em;
+        line-height: 2.3em;
+        height: 2.3em;
+        padding: 0 1em;
+        border-radius: 0.3em;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+    }
+    
+    .input-field #text-in{
+        width: 100%;
+        margin-right: 1em;
+        border: 0.1em solid #ddd;
+        border-radius: 0.1em;
+        height: 2.5em;
+    }
+
+    .input-field #submit {
+        text-transform: uppercase;
+        background: #fff;
+        background-image: none;
+        border: 0.1em solid #ddd;
+        border-radius: 0.1em;
+        color: #666;
+        height: 2.5em;
+        position: absolute;
+        right: 1em;
+        width: 6em;
+    }
 
 
 .label-light {
@@ -323,9 +383,14 @@ blockquote.twitter-tweet {
         font-weight: bold;
     }
 
+    .sidebar ul.nicklist>li {
+        background: none;
+        transition: background 0.3s ease;
+    }
+    
     .sidebar li.active,
     .sidebar ul.nicklist>li:hover {
-        background: #000;
+        background-color: #000;
         cursor: pointer;
     }
 
@@ -356,13 +421,14 @@ blockquote.twitter-tweet {
     }
 
     .sidebar .nicklist li .part {
-        display: none;
+        display: inline-block;
         color: #fff;
-        opacity: 0.5;
+        opacity: 0;
+        transition: opacity 0.1s ease;
     }
 
     .sidebar .nicklist li:hover .part {
-        display: inline-block;
+        opacity: 0.5;
     }
    
     .sidebar .nicklist li:hover .part:hover {
@@ -387,12 +453,16 @@ blockquote.twitter-tweet {
 }
 
 
+.status {
+    font-style: italic;
+}
+
 .topic {
     padding: 1em 2em;
     line-height: 3em;
     vertical-align: middle;
     height: 5.25em;
-    border-bottom: 0.25em solid #f8f8f8;
+    border-bottom: 0.25em solid #f0f0f0;
     overflow: hidden;
     background: #fff;
     margin-right: 17em;
@@ -432,6 +502,10 @@ blockquote.twitter-tweet {
 
 .usermsgtime {
     color: #888;
+    font-size: 80%;
+}
+p>.usermsgtime {
+    display: block;
 }
 
 .usernick {
