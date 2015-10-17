@@ -9,7 +9,7 @@ var Application = React.createClass({
         possel.store.removeChangeListener(this._onChange);
     },
 
-    _onChange: function() {
+    _onChange: function(store) {
         // TODO: get the callback to inject the state.
         this.setState({
             messages: possel.store.getCurrentThread(),
@@ -37,7 +37,9 @@ var Application = React.createClass({
 
     getInitialState: function() {
         return {
-            auth: false,
+            state: {
+                auth: false
+            },
             servers: [],
             messages: []
         }
@@ -48,13 +50,7 @@ var MessageState = React.createClass({
     displayName: "MessageState",
 
     getInitialState: function() {
-        return {
-            messages: [{
-                nick: "hamish",
-                timestamp: new Date(),
-                content: "hello world"
-            }]
-        }
+        return possel.store.initialState();
     },
 
     componentDidMount: function() {
@@ -75,6 +71,9 @@ var MessageState = React.createClass({
     },
 
     render: function() {
+        if (!this.state.auth) {
+            return <LoginField />
+        }
         return <MessageList messages={this.state.messages} />
     }
 
@@ -107,6 +106,9 @@ var ServerListState = React.createClass({
     },
 
     render: function() {
+        if (!this.state.auth) {
+            return <div></div>
+        }
         return <ServerList servers={this.state.servers} />
     }
 })
@@ -132,5 +134,5 @@ $(function() {
     ReactDOM.render(React.createElement(InputBox), inputNode);
     var userNode = document.getElementById("user_block");
     ReactDOM.render(React.createElement(UserListState), userNode);
-    possel.events.initial_state();
+    // possel.events.initial_state();
 });

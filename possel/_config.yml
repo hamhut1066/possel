@@ -2,7 +2,7 @@
 title: Possel
 email: meh@butts.so
 description: "Possel - a better cross platform IRC client"
-baseurl: ""
+baseurl: "/static"
 url: "http://butts.so"
 author: "Possel"
 
