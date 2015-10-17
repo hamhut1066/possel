@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>{{ page.title }}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta charset="utf-8" />
+    <meta name="theme-color" content="#181818" />
+
+    <meta name="description" content="{{ site.description }}" />
+
+    <meta name="twitter:widgets:theme" content="light">
+    <meta name="twitter:widgets:link-color" content="#1f4a92">
+    <meta name="twitter:widgets:border-color" content="#e0e0e0">
+
+    <link href="http://fonts.googleapis.com/css?family=Roboto:400,700,400italic,100,200|Roboto+Slab:400,100,700" rel="stylesheet" type="text/css">
+    <link rel="stylesheet" href="{{ site.baseurl }}/css/bootstrap.min.css">
+    <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="{{ site.baseurl }}/css/override.css">
+
+    <link rel="icon" type="image/png" href="{{ site.baseurl }}/img/favicon.png">
+    <link rel="apple-touch-icon icon" href="{{ site.baseurl }}/img/icon.png">
+    <link rel="shortcut icon" href="{{ site.baseurl }}/img/icon.png">
+    <link rel="apple-touch-icon icon" href="{{ site.baseurl }}/img/icon.png">
+
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+    <script type="text/javascript" src="{{ site.baseurl }}/js/bootstrap.min.js"></script>
+    <script src="http://cdn.jsdelivr.net/jdenticon/1.3.2/jdenticon.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.2/rollups/sha1.js"></script>
+
+
+    <script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/flux/2.1.1/Flux.js"></script>
+    <script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/react/0.14.0/react.js"></script>
+    <script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/react/0.14.0/react-dom.js"></script>
+    <script src="http://cdnjs.cloudflare.com/ajax/libs/moment.js/2.10.6/moment.min.js"></script>
+    <script src="http://cdnjs.cloudflare.com/ajax/libs/reconnecting-websocket/1.0.0/reconnecting-websocket.min.js"></script>
+    <script src="http://cdnjs.cloudflare.com/ajax/libs/js-cookie/2.0.3/js.cookie.min.js"></script>
+
+    <script>
+     var ws_url, protocol;
+     protocol = (location.protocol == 'https:'?'wss://':'ws://')
+         ws_url = protocol + location.host + "{{ reverse_url('push') }}/push";
+    </script>
+
+    <script type="text/javascript" src="{{ site.baseurl }}/js/main.js"></script>
+    <script type="text/javascript" src="{{ site.baseurl }}/js/ui.js"></script>
+
+    <!--script>window.twttr = (function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0],
+    t = window.twttr || {};
+  if (d.getElementById(id)) return t;
+  js = d.createElement(s);
+  js.id = id;
+  js.src = "https://platform.twitter.com/widgets.js";
+  fjs.parentNode.insertBefore(js, fjs);
+ 
+  t._e = [];
+  t.ready = function(f) {
+    t._e.push(f);
+  };
+ 
+  return t;
+}(document, "script", "twitter-wjs"));</script-->
+  </head>
