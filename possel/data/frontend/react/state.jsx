@@ -21,7 +21,7 @@ var Application = React.createClass({
 
     render: function() {
         /* renders the entire application */
-        if (!this.state.auth) {
+        if (!this.state.state.auth) {
             return <LoginField />
         }
         return <div className="row">
@@ -61,20 +61,29 @@ var MessageState = React.createClass({
         possel.store.removeChangeListener(this._onChange);
     },
 
-    _onChange: function() {
-        this.setState({
-            messages: possel.store.getCurrentThread(),
-            servers: possel.store.getServerList(),
-            state: possel.store.state(),
-            auth: possel.store.state().auth
-        });
+    _onChange: function(state) {
+        this.setState(state);
+        /*         this.setState({
+           messages: possel.store.getCurrentThread(),
+           servers: possel.store.getServerList(),
+           state: possel.store.state(),
+           auth: possel.store.state().auth
+           }); */
+    },
+
+    messages: function() {
+        if (this.state.state.server !== 0) {
+            return this.state.servers[this.state.state.server].buffers[this.state.state.buffer].messages || [];
+        } else {
+            return [];
+        }
     },
 
     render: function() {
-        if (!this.state.auth) {
+        if (!this.state.state.auth) {
             return <LoginField />
         }
-        return <MessageList messages={this.state.messages} />
+        return <MessageList messages={this.messages()} />
     }
 
 });
@@ -83,9 +92,7 @@ var ServerListState = React.createClass({
     displayName: "ServerListState",
 
     getInitialState: function() {
-        return {
-            servers: []
-        }
+        return possel.store.initialState();
     },
 
     componentDidMount: function() {
@@ -96,17 +103,18 @@ var ServerListState = React.createClass({
         possel.store.removeChangeListener(this._onChange);
     },
 
-    _onChange: function() {
-        this.setState({
-            messages: possel.store.getCurrentThread(),
-            servers: possel.store.getServerList(),
-            state: possel.store.state(),
-            auth: possel.store.state().auth
-        });
+    _onChange: function(state) {
+        this.setState(state);
+        /* this.setState({
+           messages: possel.store.getCurrentThread(),
+           servers: possel.store.getServerList(),
+           state: possel.store.state(),
+           auth: possel.store.state().auth
+         }); */
     },
 
     render: function() {
-        if (!this.state.auth) {
+        if (!this.state.state.auth) {
             return <div></div>
         }
         return <ServerList servers={this.state.servers} />

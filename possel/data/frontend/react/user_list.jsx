@@ -39,14 +39,15 @@ var UserListState = React.createClass({
         possel.store.removeChangeListener(this._onChange);
     },
 
-    _onChange: function() {
+    _onChange: function(state) {
         // todo: get the callback to inject the state.
-        this.setState({
-            messages: possel.store.getCurrentThread(),
-            servers: possel.store.getServerList(),
-            state: possel.store.state(),
-            auth: possel.store.state().auth
-        });
+        this.setState(state);
+        /*         this.setState({
+           messages: possel.store.getCurrentThread(),
+           servers: possel.store.getServerList(),
+           state: possel.store.state(),
+           auth: possel.store.state().auth
+           }); */
     },
 
 
