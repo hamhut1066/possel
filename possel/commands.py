@@ -1,14 +1,17 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 import argparse
+import collections
 import logging
 
-from pircel import model, tornado_adapter
+from pircel import tornado_adapter
+
+from possel import model
 
 logger = logging.getLogger(__name__)
 
 
-commands = {'join',
+COMMANDS = {'join',
             'part',
             'query',
             'me',
@@ -16,6 +19,18 @@ commands = {'join',
             'connect',
             'help',
             }
+
+
+def build_prefix_map(strings):
+    out = collections.defaultdict(list)
+    for string in strings:
+        prefix = ''
+        for char in string:
+            prefix += char
+            out[prefix].append(string)
+    return out
+
+PREFIX_COMMANDS = build_prefix_map(COMMANDS)
 
 
 class CommandParser(argparse.ArgumentParser):
@@ -52,11 +67,11 @@ class CommandParser(argparse.ArgumentParser):
 
 
 help_parser = CommandParser(prog='help', description='Display help and usage information for commands')
-help_parser.add_argument('command', help='The command to display help for', choices=commands)
+help_parser.add_argument('command', help='The command to display help for', choices=COMMANDS)
 
 
 join_parser = CommandParser(prog='join', description='Join a new channel')
-join_parser.add_argument('channel', help='The channel to join', default=None, nargs='?')
+join_parser.add_argument('channel', help='The channel to join')
 join_parser.add_argument('password', default=None, nargs='?',
                          help='Optional password for the channel')
 
@@ -76,8 +91,8 @@ me_parser.add_argument('action', help='The thing to do', nargs=argparse.REMAINDE
 
 
 connect_parser = CommandParser(prog='connect', description='Connect to a new IRC server')
-connect_parser.add_argument('-s', '--secure', action='store_true',
-                            help='Enable ssl/tls for this server')
+connect_parser.add_argument('-i', '--insecure', action='store_true',
+                            help='Disable ssl/tls for this server')
 connect_parser.add_argument('-p', '--port', default=6697,
                             help='The port to connect on')
 connect_parser.add_argument('-n', '--nick', default=None,
@@ -99,9 +114,16 @@ class Dispatcher:
         command, *rest = line.split(maxsplit=1)
         command = command.lower()
 
-        if command in commands:
+        if command in PREFIX_COMMANDS:
             buffer = model.IRCBufferModel.get(id=buffer_id)
-            getattr(self, command)(buffer, rest)
+            if len(PREFIX_COMMANDS[command]) == 1:
+                actual_command, = PREFIX_COMMANDS[command]
+                getattr(self, actual_command)(buffer, rest)
+            else:
+                model.create_line(buffer=buffer,
+                                  content='ambiguous command "{}"'.format(command),
+                                  kind='other',
+                                  nick='-*-')
 
     @help_parser.decorate
     def help(self, args):
@@ -146,7 +168,7 @@ class Dispatcher:
             user = args.buffer.server.user
         server = model.create_server(host=args.host,
                                      port=args.port,
-                                     secure=args.secure,
+                                     secure=not args.insecure,
                                      nick=args.nick or user.nick,
                                      realname=args.realname or user.realname,
                                      username=args.username or user.username)

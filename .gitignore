@@ -54,6 +54,11 @@ target/
 
 # Ctags
 tags
+
+# Local db
+possel.db
+
+# static
 node_modules
 _site
 *.html#

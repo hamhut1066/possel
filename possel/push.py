@@ -1,11 +1,10 @@
 # -*- coding: utf-8 -*-
 import logging
 
-from pircel import model
 from tornado import websocket
 import tornado.web
 
-from possel import auth
+from possel import auth, model
 
 
 logger = logging.getLogger(__name__)
@@ -50,19 +49,27 @@ class ResourcePusher(websocket.WebSocketHandler):
         self.write_message({'type': 'server', 'server': server.id})
 
     def send_membership(self, _, membership, user, buffer):
-        self.write_message({'type': 'membership', 'membership': membership.id, 'user': user.id, 'buffer': buffer.id})
+        self.write_message({'type': 'membership',
+                            'membership': membership.id,
+                            'user': user.id,
+                            'buffer': buffer.id,
+                            })
 
-    def send_deleted_membership(self, _, membership):
-        self.write_message({'type': 'delete_membership', 'membership': membership.to_dict()})
+    def send_deleted_membership(self, _, membership, user, buffer):
+        self.write_message({'type': 'delete_membership',
+                            'membership': membership.id,
+                            'user': user.id,
+                            'buffer': buffer.id,
+                            })
 
     def initialize(self, interfaces):
         self.interfaces = interfaces
-        self.signals = {model.new_line: self.send_line_id,
-                        model.new_buffer: self.send_buffer_id,
-                        model.new_user: self.send_user_id,
-                        model.new_server: self.send_server_id,
-                        model.new_membership: self.send_membership,
-                        model.deleted_membership: self.send_deleted_membership,
+        self.signals = {model.NEW_LINE: self.send_line_id,
+                        model.NEW_BUFFER: self.send_buffer_id,
+                        model.NEW_USER: self.send_user_id,
+                        model.NEW_SERVER: self.send_server_id,
+                        model.NEW_MEMBERSHIP: self.send_membership,
+                        model.DELETED_MEMBERSHIP: self.send_deleted_membership,
                         }
 
     def open(self):
