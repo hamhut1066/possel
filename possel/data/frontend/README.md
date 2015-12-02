@@ -12,7 +12,7 @@ you will need to run two commands, (one to generate the html and the second to c
 (This is assuming that you have possel up and running).
 
     jekyll build # This will build the html.
-    babel -w react/*.jsx --out-file _site/js/ui.js # This compiles and concatenates the React into a single output file.
+    babel react/*.jsx --out-file _site/js/ui.js # This compiles and concatenates the React into a single output file.
 
 There are (TODO) plans to integrate a docker development environment to ease development of the project.
 
