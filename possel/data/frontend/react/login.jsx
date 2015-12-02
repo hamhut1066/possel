@@ -19,8 +19,8 @@ var LoginField = React.createClass({
     },
     getInitialState: function() {
         return {
-            user: 'moredhel',
-            pass: 'password'
+            user: '',
+            pass: ''
         }
     },
 
